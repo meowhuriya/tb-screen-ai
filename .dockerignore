@@ -1,0 +1,32 @@
+# Git and editor files
+.git
+.gitignore
+.DS_Store
+*.swp
+*.swo
+
+# Python bytecode and caches
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Virtual environments
+venv/
+.venv/
+env/
+.env
+
+# Large raw datasets (images are evaluated locally, not needed in container image)
+data/
+data/raw/
+data/processed/
+
+# Development artifacts & tests
+tests/
+notebooks/
+results/*.png
+results/*.csv
+docs/
