@@ -1,0 +1,53 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Pytest cache & test coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Python virtual environments
+venv/
+env/
+.venv/
+ENV/
+
+# Logs & Runtime Dumps
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Operating System & IDE files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+.idea/
+.vscode/
+
+# Secrets & Environment variables
+.env
+.env.*
+*.pem
+*.key
+.streamlit/secrets.toml
+
+# Heavy raw & external datasets (exclude multi-GB image archives, keep json manifests)
+data/raw/
+data/external/montgomery/
+data/external/**/*.png
+data/external/**/*.jpg
+data/external/**/*.jpeg
+
+# Checkpoint archives (keep deployed best_model.pth and model.onnx; exclude heavy benchmark checkpoints)
+models/*.tmp
+models/epoch_*.pth
+models/resnet50_checkpoint.pth
+models/densenet121_checkpoint.pth
+models/efficientnet_b0_checkpoint.pth

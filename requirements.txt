@@ -1,0 +1,31 @@
+# Deep Learning Framework (PyTorch with Metal & CPU acceleration)
+torch==2.15.0
+torchvision==0.29.2
+
+# Scientific Computing & Diagnostic Metrics
+numpy==2.5.2
+scikit-learn==1.9.1
+scipy==1.18.1
+
+# Image Processing & Contrast Enhancement (CLAHE)
+pillow==12.3.0
+opencv-python-headless==5.0.0.93
+matplotlib==3.11.1
+seaborn==0.13.2
+
+# Model Explainability & Pulmonary Visual Attention
+grad-cam==1.5.7
+
+# Frontline Clinic UI & Clinical Referral PDF Engine
+streamlit==1.66.1
+fpdf2==2.9.0
+
+# ONNX Runtime Engine (<2.0s Low-Power CPU Inference)
+onnx==1.23.2
+onnxruntime==1.31.1
+
+# Dataset Forensics, Testing & Packaging
+tqdm==4.70.1
+pytest==9.2.0
+imagehash==4.3.2
+openpyxl==3.1.5
