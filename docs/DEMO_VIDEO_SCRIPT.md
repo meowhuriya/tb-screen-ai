@@ -6,7 +6,7 @@
 ### [0:00 - 0:15] SECTION 1: THE PROBLEM (15 Seconds)
 **[Visual]:** Opening shot of a rural Primary Health Center (PHC). Split-screen showing an analog X-ray machine with a stack of unread film envelopes, next to a map of rural India.
 **[Spoken Audio]:**
-> "Tuberculosis kills over 900 people every day in India. While early TB is 100% curable, rural clinics face a 3-week radiologist reporting delay. During those 21 days, an untreated patient continues spreading airborne bacteria in their household. Frontline clinics desperately need instant, reliable X-ray triage that runs right on a standard laptop without internet."
+> "Tuberculosis kills over 900 people every day in India. While TB is curable with standard regimens, rural clinics face a 3-week radiologist reporting delay. During those 21 days, an untreated patient continues spreading airborne bacteria in their household. Frontline clinics desperately need an assistive tool that helps find TB cases sooner by prioritising patients for confirmatory tests, running right on a standard laptop without internet."
 
 ---
 
@@ -17,11 +17,11 @@
 
 **[Visual]:** Clicks `Sample 1: Confirmed Normal`.
 **[Spoken Audio]:**
-> "In just 7 milliseconds on CPU, the model evaluates the radiograph. It classifies the patient as **🟢 LOW RISK** with 99.4% confidence. The clinical action plan advises routine primary care."
+> "In just 7 milliseconds on CPU, the model evaluates the radiograph. It classifies the patient as: 'Low risk. No TB pattern detected by the model.' The clinical action plan advises routine primary care."
 
 **[Visual]:** Clicks `Sample 2: Active Advanced Pulmonary TB`.
 **[Spoken Audio]:**
-> "Now, an active high-risk TB case. Instantly, the interface flags **🔴 HIGH RISK** at 98.2% probability. Beside it, Grad-CAM highlights the exact apical consolidation in the upper right lobe. Using the opacity slider, the clinician can seamlessly blend between raw lung tissue and AI saliency."
+> "Now, an active high-risk TB case. Instantly, the interface flags: 'High risk. TB suspected; confirm with a sputum test (GeneXpert or smear).' Beside it, Grad-CAM highlights the pulmonary attention patterns. Using the opacity slider, the clinician can seamlessly blend between raw lung tissue and AI saliency."
 
 **[Visual]:** Drags the opacity slider back and forth from 0.2 to 0.8. Then attempts to upload a color photograph of a person/flower.
 **[Spoken Audio]:**

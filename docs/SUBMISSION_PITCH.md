@@ -3,7 +3,7 @@
 
 ---
 
-Tuberculosis kills 930 people daily in India, largely due to 3-week radiologist delays in rural Primary Health Centers. TB-Screen AI (Track HI-01) is an edge-optimized diagnostic assistant delivering sub-10ms CPU inference with zero cloud dependency.
+Tuberculosis kills 930 people daily in India, largely due to 3-week radiologist delays in rural Primary Health Centers. TB-Screen AI (Track HI-01) is an edge-optimized screening assistant that helps find TB cases sooner by prioritising patients for confirmatory tests, delivering sub-10ms CPU inference with zero cloud dependency.
 
 Trained with lung region-of-interest cropping and CLAHE contrast enhancement, our calibrated EfficientNet-B0 achieves a 0.9780 ROC-AUC (95% CI: 0.964–0.990) and 95.10% sensitivity, fulfilling the WHO screening benchmark. In the spirit of scientific integrity, external validation on the NIH Montgomery cohort is transparently reported, explaining physical domain shift from analog film digitizers.
 
