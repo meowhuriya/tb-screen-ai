@@ -423,7 +423,7 @@ To prevent silent failure when presented with radiographs from unfamiliar digiti
 5. **Color-Tinted Radiographs & Out-of-Distribution Filtering:** The deterministic safety filter inspects chromatic saturation to prevent users from accidentally uploading non-radiographic natural photographs. However, legacy analog radiographs digitized with strong duotone or blue cyanotype color casts (e.g. from historical viewbox backlights) can exceed the chromatic saturation threshold and be rejected as Out-of-Distribution. For example, `sample_tb_moderate.png` (originally `Tuberculosis-418.png`) initially exhibited a strong blue viewbox tint ($34.5\%$ saturation) from its scanner and was converted to standard grayscale RGB so that it is processed cleanly without false OOD rejection. Users operating older film scanners with colored backlights must ensure scans are saved in standard 8-bit grayscale.
 6. **Integrity of Demonstration Samples:** All three built-in demonstration samples provided in the application originate strictly from the held-out untouched test split (`splits["test"]["paths"]`), with zero presence in the training cohort:
    - `sample_normal.png` $\rightarrow$ `Normal-698.png` (Test Split)
-   - `sample_tb_advanced.png` $\rightarrow$ `Tuberculosis-283.png` (Test Split)
+   - `sample_tb_advanced.png` $\rightarrow$ `Tuberculosis-667.png` (Test Split)
    - `sample_tb_moderate.png` $\rightarrow$ `Tuberculosis-418.png` (Test Split, converted to grayscale)
 
 ---

@@ -22,19 +22,58 @@ def inject_custom_css() -> None:
     css = """
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200');
+    @import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200');
 
-    /* Global Typography & Font Family */
-    html, body, [class*="css"], .stMarkdown, .stText, p, span, div, label, input, button {
-        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif !important;
+    /* Selective Typography: Inter applied to text, headings, buttons, inputs, tabs */
+    html, body, .stApp {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
         color: #1B2733;
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
     }
 
-    /* Constrain main app container to 1100px centered */
+    p, .stMarkdown p, .stText, h1, h2, h3, h4, h5, h6,
+    input, textarea, select, label,
+    button:not([data-testid*="Collapse"]):not([data-testid*="header"]),
+    .stButton > button,
+    [data-testid="stTabs"] button,
+    .clinical-card, .patient-strip, .next-step-banner {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        color: #1B2733;
+    }
+
+    /* Explicitly preserve Streamlit Material Icon Fonts */
+    [data-testid="stIconMaterial"],
+    .material-icons,
+    .material-symbols-rounded,
+    .material-symbols-outlined,
+    span[class*="material"],
+    i[class*="material"],
+    [data-testid="stExpanderToggleIcon"] *,
+    [data-testid*="CollapseButton"] *,
+    [data-testid*="headerNoPadding"] *,
+    [data-testid="stFileUploaderDropzone"] span[data-testid="stIconMaterial"],
+    [data-testid="stSelectbox"] span[data-testid="stIconMaterial"],
+    summary span:first-child span {
+        font-family: 'Material Symbols Rounded', 'Material Symbols Outlined', 'Material Icons' !important;
+        font-weight: normal !important;
+        font-style: normal !important;
+        line-height: 1 !important;
+        letter-spacing: normal !important;
+        text-transform: none !important;
+        display: inline-block !important;
+        white-space: nowrap !important;
+        word-wrap: normal !important;
+        direction: ltr !important;
+        -webkit-font-feature-settings: 'liga' !important;
+        -webkit-font-smoothing: antialiased !important;
+    }
+
+    /* Constrain main app container to 1100px centered with enough top clearance below Streamlit header */
     .block-container {
         max-width: 1100px !important;
-        padding-top: 1.5rem !important;
+        padding-top: 4.25rem !important;
         padding-bottom: 3.0rem !important;
         padding-left: 1.5rem !important;
         padding-right: 1.5rem !important;
@@ -407,6 +446,7 @@ def inject_custom_css() -> None:
     /* Responsive adjustments */
     @media (max-width: 700px) {
         .block-container {
+            padding-top: 4.5rem !important;
             padding-left: 1rem !important;
             padding-right: 1rem !important;
         }

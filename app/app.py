@@ -18,10 +18,12 @@ import sys
 import time
 from typing import Any, Dict, List
 
-# Ensure project root is in sys.path
+# Ensure project root and app directory are in sys.path
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-if PROJECT_ROOT not in sys.path:
-    sys.path.insert(0, PROJECT_ROOT)
+APP_DIR = os.path.abspath(os.path.dirname(__file__))
+for p in [PROJECT_ROOT, APP_DIR]:
+    if p not in sys.path:
+        sys.path.insert(0, p)
 
 import numpy as np
 import pandas as pd
@@ -29,14 +31,14 @@ import streamlit as st
 from PIL import Image
 
 try:
-    from app.pdf_generator import create_diagnostic_pdf
-except (ImportError, ModuleNotFoundError):
     from pdf_generator import create_diagnostic_pdf
+except (ImportError, ModuleNotFoundError):
+    from app.pdf_generator import create_diagnostic_pdf
 
 try:
-    from app.styles import inject_custom_css
-except (ImportError, ModuleNotFoundError):
     from styles import inject_custom_css
+except (ImportError, ModuleNotFoundError):
+    from app.styles import inject_custom_css
 from src.config import CLINICAL
 from src.gradcam import explain_xray
 from src.predict import (
@@ -114,7 +116,7 @@ STRINGS: Dict[str, Dict[str, str]] = {
         "notes_label": "Field observations / notes:",
         "tab_single": "Single Patient Screening",
         "tab_batch": "Batch Triage",
-        "tab_history": "Shift History",
+        "tab_history": "Session History",
         "tab_impact": "Impact & Economics",
     },
     "हिन्दी (Hindi)": {
@@ -154,7 +156,7 @@ STRINGS: Dict[str, Dict[str, str]] = {
         "notes_label": "स्वास्थ्य कार्यकर्ता की टिप्पणी:",
         "tab_single": "एकल स्क्रीनिंग",
         "tab_batch": "बैच ट्राइएज",
-        "tab_history": "इतिहास",
+        "tab_history": "सत्र इतिहास",
         "tab_impact": "प्रभाव व बचत",
     },
     "తెలుగు (Telugu)": {
@@ -194,7 +196,7 @@ STRINGS: Dict[str, Dict[str, str]] = {
         "notes_label": "ఫీల్డ్ వర్కర్ గమనికలు:",
         "tab_single": "ఒంటరి స్క్రీనింగ్",
         "tab_batch": "బ్యాచ్ ట్రయేజ్",
-        "tab_history": "చరిత్ర",
+        "tab_history": "సెషన్ చరిత్ర",
         "tab_impact": "ఆర్థిక ప్రభావం",
     },
 }
@@ -253,33 +255,9 @@ with st.sidebar:
         STRINGS["English"]["select_lang"],
         options=["English", "हिन्दी (Hindi)", "తెలుగు (Telugu)"],
         index=0,
+        key="app_language_selector",
     )
     T = STRINGS[selected_lang_key]
-
-    st.markdown("---")
-    st.markdown(f"<div class='caption-muted'><b>{T['preset_title']}</b></div>", unsafe_allow_html=True)
-
-    SAMPLE_OPTIONS = ["None", "Sample 1", "Sample 2", "Sample 3"]
-
-    def format_sample_label(opt_key: str) -> str:
-        if opt_key == "None":
-            return "None (Upload Custom)"
-        elif opt_key == "Sample 1":
-            return f"1. {T['sample_1']}"
-        elif opt_key == "Sample 2":
-            return f"2. {T['sample_2']}"
-        elif opt_key == "Sample 3":
-            return f"3. {T['sample_3']}"
-        return opt_key
-
-    sample_choice = st.radio(
-        "Select Sample to test instantly:",
-        options=SAMPLE_OPTIONS,
-        format_func=format_sample_label,
-        key="sample_selection",
-        on_change=on_sample_radio_changed,
-        label_visibility="collapsed",
-    )
 
     st.markdown("---")
     st.markdown("<div class='caption-muted'><b>Operating Threshold</b></div>", unsafe_allow_html=True)
@@ -540,6 +518,7 @@ with tab_single:
         )
 
     # Determine single active source
+    sample_choice = st.session_state.get("sample_selection", "None")
     active_image = None
     source_name = None
 

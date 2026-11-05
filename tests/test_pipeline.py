@@ -315,7 +315,7 @@ def test_sample_images_split_integrity_and_tint_ood():
     # Sample filenames mapped to original dataset files
     sample_mapping = {
         "sample_normal.png": "Normal-698.png",
-        "sample_tb_advanced.png": "Tuberculosis-283.png",
+        "sample_tb_advanced.png": "Tuberculosis-667.png",
         "sample_tb_moderate.png": "Tuberculosis-418.png",
     }
 
@@ -375,16 +375,18 @@ def test_app_input_selection_state_machine():
     assert at.session_state["sample_selection"] == "None"
     assert at.session_state["uploader_key_id"] == 0
 
-    # 1. Select Sample 1
-    at.sidebar.radio[0].set_value("1. Normal Chest").run()
+    # 1. Select Sample 1 via thumbnail button
+    btn_s1 = [b for b in at.button if b.key == "btn_s1"][0]
+    btn_s1.click().run()
     assert len(at.exception) == 0
     assert at.session_state["sample_selection"] == "Sample 1"
     banner_text = [m.value for m in at.markdown if "Currently analysing" in m.value]
     assert len(banner_text) > 0
     assert "Normal Chest" in banner_text[0]
 
-    # 2. Select Sample 2
-    at.sidebar.radio[0].set_value("2. Advanced TB").run()
+    # 2. Select Sample 2 via thumbnail button
+    btn_s2 = [b for b in at.button if b.key == "btn_s2"][0]
+    btn_s2.click().run()
     assert len(at.exception) == 0
     assert at.session_state["sample_selection"] == "Sample 2"
     banner_text = [m.value for m in at.markdown if "Currently analysing" in m.value]
@@ -402,7 +404,8 @@ def test_app_input_selection_state_machine():
     assert "patient_scan.png" in banner_text[0]
 
     # 4. Choosing Sample 1 again must clear uploaded file and analyse Sample 1
-    at.sidebar.radio[0].set_value("1. Normal Chest").run()
+    btn_s1 = [b for b in at.button if b.key == "btn_s1"][0]
+    btn_s1.click().run()
     assert len(at.exception) == 0
     assert at.session_state["sample_selection"] == "Sample 1"
     assert at.session_state["uploader_key_id"] > 0
