@@ -410,6 +410,51 @@ def test_app_input_selection_state_machine():
     assert "Normal Chest" in banner_text[0]
 
 
+def test_mahalanobis_shift_detection_and_badges():
+    """Verify penultimate Mahalanobis scanner-shift detector and UI badge integration."""
+    from src.shift_detector import MahalanobisShiftDetector, get_cached_shift_detector
+    from src.predict import predict_chest_xray
+
+    # 1. Verify fitted detector parameters
+    detector_path = os.path.join(PROJECT_ROOT, "models", "shift_detector.npz")
+    assert os.path.exists(detector_path), f"Shift detector missing at {detector_path}"
+    detector = MahalanobisShiftDetector.load(detector_path)
+    assert detector.is_fitted
+    assert detector.mean_.shape == (1280,)
+    assert detector.precision_.shape == (1280, 1280)
+    assert detector.threshold > 1000.0
+
+    # 2. Familiar scan test (Sample 1)
+    sample_normal = os.path.join(PROJECT_ROOT, "app", "sample_images", "sample_normal.png")
+    res = predict_chest_xray(sample_normal)
+    assert "shift_detection" in res
+    shift_info = res["shift_detection"]
+    assert shift_info is not None
+    assert shift_info["is_unfamiliar"] is False
+    assert "Familiar image source" in shift_info["status_label"]
+
+    # 3. Unfamiliar synthetic shift test
+    shifted_vector = detector.mean_ + 15.0 * np.ones(1280, dtype=np.float32)
+    unfamiliar_pred = detector.predict_single(shifted_vector)
+    assert unfamiliar_pred["is_unfamiliar"] is True
+    assert "Unfamiliar image source - results may be unreliable, run local calibration" in unfamiliar_pred["status_label"]
+
+    # 4. Results JSON and plot verification
+    json_path = os.path.join(PROJECT_ROOT, "results", "shift_detection.json")
+    assert os.path.exists(json_path)
+    with open(json_path, "r", encoding="utf-8") as f:
+        metrics = json.load(f)
+    assert "in_domain_test_flagged_percent" in metrics
+    assert "montgomery_external_flagged_percent" in metrics
+    assert "shift_separation_auroc" in metrics
+    assert metrics["shift_separation_auroc"] > 0.70
+
+    plot_path = os.path.join(PROJECT_ROOT, "results", "shift_detection.png")
+    assert os.path.exists(plot_path)
+    assert os.path.getsize(plot_path) > 10000
+
+
+
 
 
 

@@ -571,6 +571,26 @@ with tab_single:
                     engine_tag = "⚡ ONNX" if is_onnx_selected else "⏱️ PyTorch"
                     st.metric(label=f"{engine_tag} Latency", value=f"{lat_ms:.1f} ms")
 
+                # Scanner-Shift Domain Badge
+                shift_res = result.get("shift_detection")
+                if shift_res is not None:
+                    if shift_res["is_unfamiliar"]:
+                        st.markdown(
+                            f"<div style='background-color: #fff3cd; color: #856404; border: 1px solid #ffeeba; "
+                            f"border-radius: 6px; padding: 8px 12px; font-weight: 600; font-size: 0.88rem; margin-top: 6px; margin-bottom: 8px;'>"
+                            f"⚠️ <b>Unfamiliar image source - results may be unreliable, run local calibration</b>"
+                            f"</div>",
+                            unsafe_allow_html=True,
+                        )
+                    else:
+                        st.markdown(
+                            f"<div style='background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; "
+                            f"border-radius: 6px; padding: 8px 12px; font-weight: 600; font-size: 0.88rem; margin-top: 6px; margin-bottom: 8px;'>"
+                            f"✅ <b>Familiar image source</b>"
+                            f"</div>",
+                            unsafe_allow_html=True,
+                        )
+
                 # Action guidance card
                 st.markdown(
                     f"""

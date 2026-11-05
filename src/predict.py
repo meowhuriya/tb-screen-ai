@@ -28,6 +28,7 @@ from src.dataset import get_device, get_transforms
 from src.gradcam import explain_xray, load_model_for_inference
 from src.model import TBClassifier
 from src.safety import inspect_xray_quality_and_ood
+from src.shift_detector import get_cached_shift_detector
 
 # Global cached model instance to avoid reload overhead in web apps
 _CACHED_MODEL: Optional[TBClassifier] = None
@@ -204,6 +205,19 @@ def predict_chest_xray(
     # Confidence calculation
     confidence_pct = (tb_prob if is_positive_tb else (1.0 - tb_prob)) * 100.0
 
+    # 6. Scanner-Shift Detection (Mahalanobis Distance on penultimate embedding)
+    shift_info = None
+    detector = get_cached_shift_detector()
+    if detector is not None and detector.is_fitted:
+        try:
+            _, eval_transform = get_transforms(image_size=224, use_clahe=True, crop_roi=True)
+            feat_tensor = eval_transform(pil_image.convert("RGB")).unsqueeze(0).to(device)
+            with torch.no_grad():
+                embedding = model.extract_features(feat_tensor).cpu().numpy()[0]
+            shift_info = detector.predict_single(embedding)
+        except Exception as e:
+            print(f"Warning: Shift detection failed: {e}")
+
     return {
         "predicted_label": predicted_label,
         "is_positive_tb": is_positive_tb,
@@ -217,6 +231,7 @@ def predict_chest_xray(
         "inference_time_ms": round(float(inference_time_ms), 1),
         "device_used": str(device),
         "quality_warnings": quality_warnings,
+        "shift_detection": shift_info,
         "original_image_pil": pil_image,
         "gradcam_overlay_rgb": overlay,
         "gradcam_grayscale": grayscale_cam,
@@ -269,6 +284,19 @@ def predict_chest_xray_onnx(
     risk_tier, color_hex, emoji = determine_risk_tier(tb_prob, threshold=threshold)
     confidence_pct = (tb_prob if is_positive_tb else (1.0 - tb_prob)) * 100.0
 
+    # Scanner-Shift Detection
+    shift_info = None
+    detector = get_cached_shift_detector()
+    if detector is not None and detector.is_fitted:
+        try:
+            pt_model, pt_dev = get_cached_model()
+            with torch.no_grad():
+                feat_t = torch.from_numpy(tensor).to(pt_dev)
+                emb = pt_model.extract_features(feat_t).cpu().numpy()[0]
+            shift_info = detector.predict_single(emb)
+        except Exception:
+            pass
+
     return {
         "predicted_label": predicted_label,
         "is_positive_tb": is_positive_tb,
@@ -282,5 +310,6 @@ def predict_chest_xray_onnx(
         "inference_time_ms": round(float(inference_time_ms), 2),
         "engine": "ONNX Runtime (CPU Execution Provider)",
         "quality_warnings": quality_warnings,
+        "shift_detection": shift_info,
         "original_image_pil": pil_image,
     }

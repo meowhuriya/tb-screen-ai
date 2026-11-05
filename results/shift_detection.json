@@ -1,0 +1,35 @@
+{
+  "method": "Mahalanobis Distance with Ledoit-Wolf Shrinkage Covariance",
+  "embedding_layer": "EfficientNet-B0 penultimate features (1,280 dimensions)",
+  "train_samples_fitted": 2940,
+  "validation_samples_calibrated": 630,
+  "validation_percentile_cutoff": 95.0,
+  "calibrated_shift_threshold_tau": 2849.08,
+  "in_domain_validation_flagged_percent": 5.08,
+  "in_domain_test_flagged_percent": 2.7,
+  "montgomery_external_flagged_percent": 9.42,
+  "shift_separation_auroc": 0.7422,
+  "distance_statistics": {
+    "train": {
+      "mean": 1103.36,
+      "std": 183.14,
+      "median": 1084.87
+    },
+    "val": {
+      "mean": 1818.4,
+      "std": 506.45,
+      "median": 1717.78
+    },
+    "test": {
+      "mean": 1755.34,
+      "std": 492.12,
+      "median": 1626.8
+    },
+    "montgomery": {
+      "mean": 2134.0,
+      "std": 483.66,
+      "median": 2085.48
+    }
+  },
+  "clinical_safeguard_summary": "The Mahalanobis scanner-shift detector flagged 2.70% of in-domain test scans (target ~5%) vs 9.42% of Montgomery scans, achieving an AUROC of 0.7422. This flags unfamiliar digitized radiographs before unreliable inference occurs."
+}

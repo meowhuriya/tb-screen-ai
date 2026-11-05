@@ -77,6 +77,31 @@ class TBClassifier(nn.Module):
         """Forward pass."""
         return self.backbone(x)
 
+    def extract_features(self, x: torch.Tensor) -> torch.Tensor:
+        """Extract penultimate-layer feature embedding vector."""
+        if self.architecture == "efficientnet_b0":
+            x = self.backbone.features(x)
+            x = self.backbone.avgpool(x)
+            return torch.flatten(x, 1)
+        elif self.architecture == "densenet121":
+            features = self.backbone.features(x)
+            out = nn.functional.relu(features, inplace=True)
+            out = nn.functional.adaptive_avg_pool2d(out, (1, 1))
+            return torch.flatten(out, 1)
+        elif self.architecture == "resnet50":
+            x = self.backbone.conv1(x)
+            x = self.backbone.bn1(x)
+            x = self.backbone.relu(x)
+            x = self.backbone.maxpool(x)
+            x = self.backbone.layer1(x)
+            x = self.backbone.layer2(x)
+            x = self.backbone.layer3(x)
+            x = self.backbone.layer4(x)
+            x = self.backbone.avgpool(x)
+            return torch.flatten(x, 1)
+        else:
+            raise ValueError(f"Unsupported architecture: {self.architecture}")
+
     def freeze_backbone(self) -> None:
         """Freeze feature extractor for Stage 1 head warmup."""
         if self.architecture == "efficientnet_b0":

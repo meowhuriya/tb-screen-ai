@@ -44,6 +44,7 @@ data/external/montgomery/
 data/external/**/*.png
 data/external/**/*.jpg
 data/external/**/*.jpeg
+data/processed/*.npz
 
 # Checkpoint archives (keep deployed best_model.pth and model.onnx; exclude heavy benchmark checkpoints)
 models/*.tmp
