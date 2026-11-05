@@ -1,0 +1,194 @@
+{
+  "leakage_audit": {
+    "exact_duplicate_groups_count": 2,
+    "near_duplicate_pairs_count": 3
+  },
+  "shortcut_learning_audit": {
+    "samples_audited": 20,
+    "mean_lung_activation_pct": 44.186377599643286,
+    "mean_border_activation_pct": 55.813622400356714,
+    "shortcuts_flagged_count": 17,
+    "records": [
+      {
+        "filename": "Tuberculosis-292.png",
+        "true_label": "Tuberculosis",
+        "pred_label": "Tuberculosis",
+        "tb_probability": 0.999427080154419,
+        "lung_activation_pct": 61.1,
+        "border_activation_pct": 38.9,
+        "shortcut_suspected": false
+      },
+      {
+        "filename": "Tuberculosis-122.png",
+        "true_label": "Tuberculosis",
+        "pred_label": "Tuberculosis",
+        "tb_probability": 0.6590104103088379,
+        "lung_activation_pct": 51.5,
+        "border_activation_pct": 48.5,
+        "shortcut_suspected": true
+      },
+      {
+        "filename": "Tuberculosis-185.png",
+        "true_label": "Tuberculosis",
+        "pred_label": "Tuberculosis",
+        "tb_probability": 0.9983034133911133,
+        "lung_activation_pct": 61.6,
+        "border_activation_pct": 38.4,
+        "shortcut_suspected": false
+      },
+      {
+        "filename": "Tuberculosis-20.png",
+        "true_label": "Tuberculosis",
+        "pred_label": "Tuberculosis",
+        "tb_probability": 0.9973727464675903,
+        "lung_activation_pct": 34.0,
+        "border_activation_pct": 66.0,
+        "shortcut_suspected": true
+      },
+      {
+        "filename": "Tuberculosis-288.png",
+        "true_label": "Tuberculosis",
+        "pred_label": "Tuberculosis",
+        "tb_probability": 0.9947499632835388,
+        "lung_activation_pct": 54.7,
+        "border_activation_pct": 45.3,
+        "shortcut_suspected": true
+      },
+      {
+        "filename": "Tuberculosis-391.png",
+        "true_label": "Tuberculosis",
+        "pred_label": "Tuberculosis",
+        "tb_probability": 0.9997912049293518,
+        "lung_activation_pct": 58.9,
+        "border_activation_pct": 41.1,
+        "shortcut_suspected": true
+      },
+      {
+        "filename": "Tuberculosis-259.png",
+        "true_label": "Tuberculosis",
+        "pred_label": "Tuberculosis",
+        "tb_probability": 0.9440268278121948,
+        "lung_activation_pct": 53.6,
+        "border_activation_pct": 46.4,
+        "shortcut_suspected": true
+      },
+      {
+        "filename": "Tuberculosis-508.png",
+        "true_label": "Tuberculosis",
+        "pred_label": "Tuberculosis",
+        "tb_probability": 0.9990496039390564,
+        "lung_activation_pct": 52.1,
+        "border_activation_pct": 47.9,
+        "shortcut_suspected": true
+      },
+      {
+        "filename": "Tuberculosis-268.png",
+        "true_label": "Tuberculosis",
+        "pred_label": "Tuberculosis",
+        "tb_probability": 0.9997289776802063,
+        "lung_activation_pct": 44.2,
+        "border_activation_pct": 55.8,
+        "shortcut_suspected": true
+      },
+      {
+        "filename": "Tuberculosis-283.png",
+        "true_label": "Tuberculosis",
+        "pred_label": "Tuberculosis",
+        "tb_probability": 0.999985933303833,
+        "lung_activation_pct": 60.8,
+        "border_activation_pct": 39.2,
+        "shortcut_suspected": false
+      },
+      {
+        "filename": "Normal-2031.png",
+        "true_label": "Normal",
+        "pred_label": "Normal",
+        "tb_probability": 0.001291586086153984,
+        "lung_activation_pct": 27.2,
+        "border_activation_pct": 72.8,
+        "shortcut_suspected": true
+      },
+      {
+        "filename": "Normal-2165.png",
+        "true_label": "Normal",
+        "pred_label": "Normal",
+        "tb_probability": 1.0322448360966519e-05,
+        "lung_activation_pct": 33.6,
+        "border_activation_pct": 66.4,
+        "shortcut_suspected": true
+      },
+      {
+        "filename": "Normal-545.png",
+        "true_label": "Normal",
+        "pred_label": "Normal",
+        "tb_probability": 0.006609866861253977,
+        "lung_activation_pct": 45.8,
+        "border_activation_pct": 54.2,
+        "shortcut_suspected": true
+      },
+      {
+        "filename": "Normal-2997.png",
+        "true_label": "Normal",
+        "pred_label": "Normal",
+        "tb_probability": 0.001507931505329907,
+        "lung_activation_pct": 24.6,
+        "border_activation_pct": 75.4,
+        "shortcut_suspected": true
+      },
+      {
+        "filename": "Normal-1805.png",
+        "true_label": "Normal",
+        "pred_label": "Normal",
+        "tb_probability": 0.0010417829034850001,
+        "lung_activation_pct": 43.5,
+        "border_activation_pct": 56.5,
+        "shortcut_suspected": true
+      },
+      {
+        "filename": "Normal-250.png",
+        "true_label": "Normal",
+        "pred_label": "Normal",
+        "tb_probability": 0.0012344528222456574,
+        "lung_activation_pct": 34.7,
+        "border_activation_pct": 65.3,
+        "shortcut_suspected": true
+      },
+      {
+        "filename": "Normal-335.png",
+        "true_label": "Normal",
+        "pred_label": "Normal",
+        "tb_probability": 0.008449908345937729,
+        "lung_activation_pct": 50.5,
+        "border_activation_pct": 49.5,
+        "shortcut_suspected": true
+      },
+      {
+        "filename": "Normal-1916.png",
+        "true_label": "Normal",
+        "pred_label": "Normal",
+        "tb_probability": 0.002418311545625329,
+        "lung_activation_pct": 20.2,
+        "border_activation_pct": 79.8,
+        "shortcut_suspected": true
+      },
+      {
+        "filename": "Normal-165.png",
+        "true_label": "Normal",
+        "pred_label": "Normal",
+        "tb_probability": 8.567367331124842e-06,
+        "lung_activation_pct": 27.2,
+        "border_activation_pct": 72.8,
+        "shortcut_suspected": true
+      },
+      {
+        "filename": "Normal-3289.png",
+        "true_label": "Normal",
+        "pred_label": "Normal",
+        "tb_probability": 0.0062285372987389565,
+        "lung_activation_pct": 43.8,
+        "border_activation_pct": 56.2,
+        "shortcut_suspected": true
+      }
+    ]
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "Accuracy": {
+    "mean": 78.774,
+    "std": 1.9691
+  },
+  "Sensitivity (Recall)": {
+    "mean": 99.796,
+    "std": 0.408
+  },
+  "Specificity": {
+    "mean": 74.57,
+    "std": 2.3332
+  },
+  "Precision": {
+    "mean": 44.09,
+    "std": 2.3109
+  },
+  "F1-Score": {
+    "mean": 0.6113,
+    "std": 0.0225
+  },
+  "ROC-AUC": {
+    "mean": 0.9975,
+    "std": 0.0013
+  }
+}

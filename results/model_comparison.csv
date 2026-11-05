@@ -1,0 +1,7 @@
+Model Pipeline,Parameters,Accuracy (%),Sensitivity (%),Specificity (%),Precision (%),F1-Score,ROC-AUC
+EfficientNet-B0 (Single),4.01M,85.01,100.0,82.1,52.04,0.6846,0.9962
+EfficientNet-B0 + TTA,4.01M,50.08,87.25,42.86,22.88,0.3625,0.8321
+DenseNet-121 (Single),6.96M,79.59,99.02,75.81,44.3,0.6121,0.9976
+ResNet-50 (Single),23.51M,89.15,100.0,87.05,60.0,0.75,0.9992
+Ensemble (EffNet + DenseNet),10.97M,82.78,100.0,79.43,48.57,0.6538,0.9986
+Ensemble (EffNet + DenseNet) + TTA,10.97M,64.91,98.04,58.48,31.45,0.4762,0.968

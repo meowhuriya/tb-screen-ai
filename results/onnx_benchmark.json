@@ -1,0 +1,14 @@
+{
+  "engine": "ONNX Runtime (CPUExecutionProvider, 2 threads)",
+  "hardware_target": "Dual-Core Laptop CPU (No GPU required)",
+  "warmup_runs": 10,
+  "benchmark_runs": 100,
+  "latency_median_ms": 7.19,
+  "latency_mean_ms": 7.32,
+  "latency_p95_ms": 7.93,
+  "latency_min_ms": 7.03,
+  "latency_max_ms": 10.62,
+  "throughput_xrays_per_min": 8344.4,
+  "sub_2s_criterion_met": true,
+  "numerical_diff_vs_pytorch": 0.0
+}
