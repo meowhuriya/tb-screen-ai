@@ -362,5 +362,54 @@ def test_who_benchmark_and_calibrated_thresholds():
     assert res_cal["is_positive_tb"] is True
 
 
+def test_app_input_selection_state_machine():
+    """Verify Streamlit app input selection, mutual exclusion, and stable session state."""
+    from streamlit.testing.v1 import AppTest
+
+    app_path = os.path.join(PROJECT_ROOT, "app", "app.py")
+    at = AppTest.from_file(app_path, default_timeout=30)
+    at.run()
+    assert len(at.exception) == 0, f"AppTest run failed: {at.exception}"
+
+    # Initial state
+    assert at.session_state["sample_selection"] == "None"
+    assert at.session_state["uploader_key_id"] == 0
+
+    # 1. Select Sample 1
+    at.sidebar.radio[0].set_value("1. Normal Chest (Healthy)").run()
+    assert len(at.exception) == 0
+    assert at.session_state["sample_selection"] == "Sample 1"
+    banner_text = [m.value for m in at.markdown if "Currently analysing" in m.value]
+    assert len(banner_text) > 0
+    assert "Normal Chest" in banner_text[0]
+
+    # 2. Select Sample 2
+    at.sidebar.radio[0].set_value("2. Advanced TB (Cavitation)").run()
+    assert len(at.exception) == 0
+    assert at.session_state["sample_selection"] == "Sample 2"
+    banner_text = [m.value for m in at.markdown if "Currently analysing" in m.value]
+    assert "Advanced TB" in banner_text[0]
+
+    # 3. Upload a file: must switch sample_selection to "None" and analyse the upload
+    sample_normal_path = os.path.join(PROJECT_ROOT, "app", "sample_images", "sample_normal.png")
+    with open(sample_normal_path, "rb") as f:
+        img_bytes = f.read()
+
+    at.file_uploader[0].upload("patient_scan.png", img_bytes).run()
+    assert len(at.exception) == 0
+    assert at.session_state["sample_selection"] == "None"
+    banner_text = [m.value for m in at.markdown if "Currently analysing" in m.value]
+    assert "patient_scan.png" in banner_text[0]
+
+    # 4. Choosing Sample 1 again must clear uploaded file and analyse Sample 1
+    at.sidebar.radio[0].set_value("1. Normal Chest (Healthy)").run()
+    assert len(at.exception) == 0
+    assert at.session_state["sample_selection"] == "Sample 1"
+    assert at.session_state["uploader_key_id"] > 0
+    banner_text = [m.value for m in at.markdown if "Currently analysing" in m.value]
+    assert "Normal Chest" in banner_text[0]
+
+
+
 
 

@@ -38,9 +38,11 @@ except (ImportError, ModuleNotFoundError):
     from pdf_generator import create_diagnostic_pdf
 
 from src.config import CLINICAL
+from src.gradcam import explain_xray
 from src.predict import (
     CALIBRATED_THRESHOLD,
     WHO_BENCHMARK_THRESHOLD,
+    get_cached_model,
     predict_chest_xray,
     predict_chest_xray_onnx,
     validate_and_load_image,
@@ -245,14 +247,41 @@ STRINGS: Dict[str, Dict[str, str]] = {
     },
 }
 
-# Session state initialization
+# Session state initialization with explicit keys
 if "patient_history" not in st.session_state:
     st.session_state["patient_history"] = []
+
+if "sample_selection" not in st.session_state:
+    st.session_state["sample_selection"] = "None"
+
+if "uploader_key_id" not in st.session_state:
+    st.session_state["uploader_key_id"] = 0
 
 
 def add_to_session_history(record: Dict[str, Any]) -> None:
     """Store patient screening record in browser session."""
     st.session_state["patient_history"].append(record)
+
+
+def on_sample_radio_changed() -> None:
+    """Callback when user selects a demo sample or None.
+    
+    Rule: Choosing a sample (1, 2, or 3) clears any uploaded file so only one source is active.
+    """
+    choice = st.session_state.get("sample_selection", "None")
+    if choice != "None":
+        st.session_state["uploader_key_id"] = st.session_state.get("uploader_key_id", 0) + 1
+
+
+def on_file_uploaded() -> None:
+    """Callback when a user uploads or removes a file in single screening mode.
+    
+    Rule: Uploading a file sets the sample radio to 'None (Upload Custom)' and analyses the upload.
+    """
+    current_key = f"single_uploader_{st.session_state.get('uploader_key_id', 0)}"
+    uploaded = st.session_state.get(current_key)
+    if uploaded is not None:
+        st.session_state["sample_selection"] = "None"
 
 
 # ======================================================================
@@ -271,10 +300,26 @@ with st.sidebar:
 
     st.markdown("---")
     st.subheader(T["preset_title"])
+
+    SAMPLE_OPTIONS = ["None", "Sample 1", "Sample 2", "Sample 3"]
+
+    def format_sample_label(opt_key: str) -> str:
+        if opt_key == "None":
+            return "None (Upload Custom)"
+        elif opt_key == "Sample 1":
+            return T["sample_1"]
+        elif opt_key == "Sample 2":
+            return T["sample_2"]
+        elif opt_key == "Sample 3":
+            return T["sample_3"]
+        return opt_key
+
     sample_choice = st.radio(
         "Select Sample to test instantly:",
-        options=["None (Upload Custom)", T["sample_1"], T["sample_2"], T["sample_3"]],
-        index=0,
+        options=SAMPLE_OPTIONS,
+        format_func=format_sample_label,
+        key="sample_selection",
+        on_change=on_sample_radio_changed,
     )
 
     st.markdown("---")
@@ -322,8 +367,8 @@ with st.sidebar:
     st.success(
         f"● Engine: {runtime_label}\n\n"
         "● Device: Auto-detected (CPU/MPS)\n\n"
-        "● Offline Capable: Yes (100% Local RAM)\n\n"
-        "● Median Latency: 7.19 ms (ONNX)"
+        "● Mode: In-Memory Ephemeral (Zero Storage)\n\n"
+        "● Architecture: 100% Offline-Capable Edge Model"
     )
 
     st.markdown("---")
@@ -340,10 +385,10 @@ with st.sidebar:
 st.markdown(f"<div class='main-header'>🫁 {T['title']}</div>", unsafe_allow_html=True)
 st.markdown(f"<div class='sub-header'>{T['subtitle']}</div>", unsafe_allow_html=True)
 
-# Privacy & Offline processing guarantee
+# Privacy & Edge architecture guarantee
 st.markdown(
-    "<div class='privacy-badge'>🔒 <b>Local Edge Privacy Guarantee:</b> All radiographs are analyzed locally in RAM on this device. "
-    "Images are never stored, cached, or transmitted to any external cloud server. Works completely offline.</div>",
+    "<div class='privacy-badge'>🔒 <b>Data Privacy Guarantee:</b> Designed for 100% offline edge deployment in rural clinics with zero cloud dependency. "
+    "In this hosted web demonstration, radiographs are processed ephemerally in RAM and are never permanently stored, logged, or shared.</div>",
     unsafe_allow_html=True,
 )
 
@@ -378,45 +423,54 @@ with tab_single:
     source_name = None
 
     sample_dir = os.path.join(PROJECT_ROOT, "app", "sample_images")
-    if sample_choice == T["sample_1"]:
-        sample_path = os.path.join(sample_dir, "sample_normal.png")
-        if os.path.exists(sample_path):
-            active_image = Image.open(sample_path)
-            source_name = "Sample 1: Confirmed Normal Radiograph"
-    elif sample_choice == T["sample_2"]:
-        sample_path = os.path.join(sample_dir, "sample_tb_advanced.png")
-        if os.path.exists(sample_path):
-            active_image = Image.open(sample_path)
-            source_name = "Sample 2: Active Advanced Pulmonary TB"
-    elif sample_choice == T["sample_3"]:
-        sample_path = os.path.join(sample_dir, "sample_tb_moderate.png")
-        if os.path.exists(sample_path):
-            active_image = Image.open(sample_path)
-            source_name = "Sample 3: Moderate Pulmonary TB"
 
+    uploader_key = f"single_uploader_{st.session_state.get('uploader_key_id', 0)}"
     uploaded_file = st.file_uploader(
         T["upload_label"],
         type=["png", "jpg", "jpeg"],
-        key="single_uploader",
+        key=uploader_key,
+        on_change=on_file_uploaded,
         help="Upload a standard posteroanterior (PA) frontal chest radiograph.",
     )
 
-    if uploaded_file is not None:
-        file_bytes = uploaded_file.getvalue()
-        is_size_ok, size_err = validate_image_file_size(file_bytes, max_mb=10.0)
-        if not is_size_ok:
-            st.error(f"❌ File Error: {size_err}")
-            active_image = None
-        else:
-            try:
-                active_image = validate_and_load_image(file_bytes)
-                source_name = f"Uploaded File: {uploaded_file.name}"
-            except Exception as e:
-                st.error(f"❌ Input Error: {str(e)}")
+    # Determine single active source based on strict mutual exclusion rules
+    if sample_choice == "Sample 1":
+        sample_path = os.path.join(sample_dir, "sample_normal.png")
+        if os.path.exists(sample_path):
+            active_image = Image.open(sample_path)
+            source_name = T["sample_1"]
+    elif sample_choice == "Sample 2":
+        sample_path = os.path.join(sample_dir, "sample_tb_advanced.png")
+        if os.path.exists(sample_path):
+            active_image = Image.open(sample_path)
+            source_name = T["sample_2"]
+    elif sample_choice == "Sample 3":
+        sample_path = os.path.join(sample_dir, "sample_tb_moderate.png")
+        if os.path.exists(sample_path):
+            active_image = Image.open(sample_path)
+            source_name = T["sample_3"]
+    elif sample_choice == "None":
+        if uploaded_file is not None:
+            file_bytes = uploaded_file.getvalue()
+            is_size_ok, size_err = validate_image_file_size(file_bytes, max_mb=10.0)
+            if not is_size_ok:
+                st.error(f"❌ File Error: {size_err}")
                 active_image = None
+            else:
+                try:
+                    active_image = validate_and_load_image(file_bytes)
+                    source_name = uploaded_file.name
+                except Exception as e:
+                    st.error(f"❌ Input Error: {str(e)}")
+                    active_image = None
 
     if active_image is not None:
-        st.caption(f"Currently Analyzing: **{source_name}**")
+        st.markdown(
+            f"<div style='background-color: #e8f4fd; border-left: 5px solid #0c5460; padding: 10px 14px; border-radius: 4px; font-size: 1.05rem; font-weight: 700; color: #0c5460; margin-top: 10px; margin-bottom: 14px;'>"
+            f"Currently analysing: {source_name}"
+            f"</div>",
+            unsafe_allow_html=True,
+        )
 
         # Opacity slider
         cam_weight = st.slider(
@@ -562,6 +616,8 @@ with tab_single:
                     )
                 except Exception as e:
                     st.error(f"Error compiling referral PDF: {str(e)}")
+    else:
+        st.info("👈 Select a demo sample from the sidebar or upload a frontal chest radiograph above to begin screening.")
 
 
 # ----------------------------------------------------------------------
