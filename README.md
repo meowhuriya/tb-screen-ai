@@ -14,7 +14,7 @@ license: mit
 ### Problem Statement: HI-01 — Medical Image Diagnostic Assistant
 **Hackathon:** Neural Storm | **Target Environment:** Resource-Constrained Rural Primary Health Centers (PHCs)
 
-[![Live Demo](https://img.shields.io/badge/Live%20Demo-Streamlit%20Community%20Cloud-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white)](https://share.streamlit.io/)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-Streamlit%20Community%20Cloud-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white)](https://tb-screen-ai-hrgejmak9ujcwfm5q4duap.streamlit.app)
 [![HuggingFace Space](https://img.shields.io/badge/HuggingFace-Spaces%20Deployment-yellow?style=for-the-badge&logo=huggingface&logoColor=black)](https://huggingface.co/spaces)
 [![PyTorch](https://img.shields.io/badge/PyTorch-2.15-EE4C2C?style=flat-square&logo=pytorch&logoColor=white)](https://pytorch.org/)
 [![ONNX Runtime](https://img.shields.io/badge/ONNX%20Runtime-CPU%207.19ms-005CED?style=flat-square&logo=onnx&logoColor=white)](results/onnx_benchmark.json)
@@ -208,7 +208,11 @@ docker build -t tb-screen-ai .
 docker run -p 8501:8501 tb-screen-ai
 ```
 
-### 1-Click Cloud Deployment
+### Live Cloud Deployment
+- **Official Live Web Application:** [https://tb-screen-ai-hrgejmak9ujcwfm5q4duap.streamlit.app](https://tb-screen-ai-hrgejmak9ujcwfm5q4duap.streamlit.app)
+- **GitHub Repository:** [https://github.com/meowhuriya/tb-screen-ai](https://github.com/meowhuriya/tb-screen-ai)
+
+### 1-Click Cloud Deployment Instructions
 
 #### Streamlit Community Cloud:
 1. Fork or push this repository to GitHub.
