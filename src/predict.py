@@ -136,6 +136,13 @@ def validate_and_load_image(
     raise TypeError(f"Unsupported image input type: {type(image_input)}")
 
 
+RISK_TEXT_MAP = {
+    "LOW": "Low risk. No TB pattern detected by the model.",
+    "NEEDS_REVIEW": "Needs review. Findings are indeterminate; clinician review advised.",
+    "HIGH": "High risk. TB suspected; confirm with a sputum test (GeneXpert or smear).",
+}
+
+
 def determine_risk_tier(
     tb_prob: float,
     threshold: Optional[float] = None,
@@ -225,6 +232,7 @@ def predict_chest_xray(
         "normal_probability": round(float(1.0 - tb_prob), 4),
         "confidence_percentage": round(float(confidence_pct), 2),
         "risk_tier": risk_tier,
+        "risk_description": RISK_TEXT_MAP[risk_tier],
         "risk_color_hex": color_hex,
         "risk_emoji": emoji,
         "decision_threshold_used": threshold,
@@ -304,6 +312,7 @@ def predict_chest_xray_onnx(
         "normal_probability": round(float(1.0 - tb_prob), 4),
         "confidence_percentage": round(float(confidence_pct), 2),
         "risk_tier": risk_tier,
+        "risk_description": RISK_TEXT_MAP[risk_tier],
         "risk_color_hex": color_hex,
         "risk_emoji": emoji,
         "decision_threshold_used": threshold,

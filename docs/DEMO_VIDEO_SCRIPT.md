@@ -21,7 +21,7 @@
 
 **[Visual]:** Clicks `Sample 2: Active Advanced Pulmonary TB`.
 **[Spoken Audio]:**
-> "Now, an active cavitary case. Instantly, the interface flags **🔴 HIGH RISK** at 98.2% probability. Beside it, Grad-CAM highlights the exact apical consolidation in the upper right lobe. Using the opacity slider, the clinician can seamlessly blend between raw lung tissue and AI saliency."
+> "Now, an active high-risk TB case. Instantly, the interface flags **🔴 HIGH RISK** at 98.2% probability. Beside it, Grad-CAM highlights the exact apical consolidation in the upper right lobe. Using the opacity slider, the clinician can seamlessly blend between raw lung tissue and AI saliency."
 
 **[Visual]:** Drags the opacity slider back and forth from 0.2 to 0.8. Then attempts to upload a color photograph of a person/flower.
 **[Spoken Audio]:**

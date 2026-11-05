@@ -52,7 +52,7 @@ Experience the interactive frontline clinic triage application directly in your 
 | Key Metric | Value | Source / Benchmark Context |
 | :--- | :---: | :--- |
 | **WHO Screening Sensitivity** | **95.10%** | Exceeds WHO $\ge 95\%$ target benchmark for community TB screening (97/102 active cases detected; ROC-AUC: **0.9780** with 95% CI $[0.9643, 0.9897]$) |
-| **Edge CPU Latency** | **7.19 ms** | Ultra-lean ONNX Runtime CPU inference on budget dual-core laptops (278x faster than the 2.0s clinical requirement; **87.2 X-rays/second** batch speed) |
+| **Edge CPU Latency** | **7.19 ms** | ONNX Runtime, single image, local CPU (Source: `results/onnx_benchmark.json`; 278x faster than the 2.0s clinical requirement) |
 | **Probability Calibration (ECE)** | **2.31%** | Expected Calibration Error reduced by more than half ($5.10\% \rightarrow 2.31\%$) via post-hoc Temperature Scaling ($T^* = 0.4860$) for reliable clinical risk assessment |
 
 ---
@@ -221,7 +221,7 @@ All visual assets below are freshly captured from the live application and prese
 
 ### 2. Active TB Sample with Grad-CAM Saliency Heatmap
 ![TB Sample with Heatmap](docs/images/sample_tb_heatmap.png)
-*Original chest radiograph side-by-side with Grad-CAM overlay accurately localizing active pulmonary apical cavitary opacities.*
+*Original chest radiograph side-by-side with Grad-CAM overlay highlighting pulmonary attention patterns.*
 
 ### 3. Normal Chest Radiograph (Healthy Control)
 ![Normal Sample Result](docs/images/sample_normal_result.png)
@@ -365,7 +365,7 @@ Post-hoc Temperature Scaling learned an optimal scalar temperature of **$T^* = 0
 >
 > **Root Cause:**
 > 1. **Scanner & Digitization Physics:** Montgomery radiographs were captured on an analog Eureka stationary unit and digitized via a flatbed laser film scanner at ultra-high resolution ($4020 \times 4892$) with heavy film-grain noise, whereas training data was captured on digital direct radiography (DR) units with flat contrast curves.
-> 2. **Disease Demographics:** Montgomery cases originate from an urban US immigrant screening program dominated by subtle, chronic apical fibrocavitary scarring and calcified granulomas, whereas the training dataset features acute, florid lobar consolidations.
+> 2. **Disease Demographics:** Montgomery cases originate from an urban US immigrant screening program dominated by subtle, chronic apical scarring and calcified granulomas, whereas the training dataset features acute, florid lobar consolidations.
 > 3. **Mandatory Protocol:** Any real-world deployment in a new clinic or hospital requires local contrast curve and threshold calibration on that specific facility's X-ray machine before clinical deployment.
 
 ---
@@ -380,8 +380,8 @@ To prevent silent failure when presented with radiographs from unfamiliar digiti
   - **External Montgomery Dataset Flagged:** **$9.42\%$** (13/138 flagged).
   - **Shift AUROC:** **$0.7422$** for separating in-domain test scans from external Montgomery radiographs.
 - **Application Integration:** The Streamlit interface displays an instant domain check badge:
-  - `✅ Familiar image source` (In-distribution scanner profile)
-  - `⚠️ Unfamiliar image source - results may be unreliable, run local calibration` (Out-of-distribution scanner profile)
+  - `Familiar scanner profile` (In-distribution scanner profile)
+  - `Unfamiliar scanner profile - local calibration recommended` (Out-of-distribution scanner profile)
 - **Honest Limitations:** While the detector successfully flags unfamiliar scanner hardware, an automated local re-adaptation tab was not built. The model requires local calibration before clinical use on new scanner equipment.
 
 ![Scanner Shift Detection Distribution](docs/images/shift_detection.png)
@@ -393,23 +393,24 @@ To prevent silent failure when presented with radiographs from unfamiliar digiti
 
 ![Error Analysis Grad-CAM](docs/images/error_analysis.png)
 
-- **Worst False Negatives (e.g. `Tuberculosis-109.png`, $p=0.34\%$):** Missed due to subtle apical micro-nodularity lacking dense confluent consolidation or cavitation. Low radiographic contrast generated under-activated gradient responses.
-- **Worst False Positives (e.g. `Normal-2624.png`, $p=98.74\%$):** Normal healthy lungs misclassified due to prominent bronchovascular hilar markings and overlapping clavicular-first rib densities creating high local gradients ($98.7\%$ probability), mimicking early apical infiltration.
+- **Worst False Negatives (e.g. `Tuberculosis-109.png`, $p=0.34\%$):** Missed due to subtle apical micro-nodularity lacking dense confluent consolidation. Low radiographic contrast generated under-activated gradient responses.
+- **Worst False Positives (e.g. `Normal-2624.png`, $p=98.74\%$):** Normal healthy lungs misclassified due to prominent bronchovascular hilar markings and overlapping clavicular-first rib densities creating high local gradients ($98.7\%$ probability), mimicking early apical opacity.
 
 ---
 
-### 13.9. Hardware Efficiency & Measured Batch Screening Speed
-*Evaluated on dual-core CPU with ONNX Runtime (`models/model.onnx`, 0.72 MB) and PyTorch Edge.*
+### 13.9. Hardware Efficiency & Measured Screening Latency
+*Evaluated on local CPU with ONNX Runtime (`models/model.onnx`, 0.72 MB) and PyTorch Edge (`models/best_model.pth`, 15.6 MB).*
 
-| Performance Benchmark | Target Specification | Real Measured Measurement |
-| :--- | :---: | :---: |
-| **ONNX Measured Batch Screening Speed** | $> 10\text{ X-rays/sec}$ | **$\mathbf{87.2\text{ X-rays / second}}$** ($\mathbf{11.47\text{ ms / X-ray}}$ end-to-end) |
-| **PyTorch + Grad-CAM Batch Speed** | $> 5\text{ X-rays/sec}$ | **$\mathbf{36.9\text{ X-rays / second}}$** ($\mathbf{27.11\text{ ms / X-ray}}$ with full visual explainability) |
-| **Median CPU Latency ($p_{50}$)** | $< 2,000\text{ ms}$ (2.0 sec) | **$\mathbf{7.19\text{ ms}}$** (278x faster than target) |
-| **95th Percentile ($p_{95}$)** | $< 2,500\text{ ms}$ | **$\mathbf{7.93\text{ ms}}$** |
-| **Graph-Only Throughput** | $> 30\text{ X-rays/min}$ | **$\mathbf{8,344.4\text{ X-rays / minute}}$** |
-| **Numerical Consistency vs PyTorch** | Prob Diff $< 10^{-4}$ | **$\mathbf{0.00\text{e}+00}$** (Exact match) |
-| **RAM Footprint (Peak RSS)** | $< 1,024\text{ MB}$ | **$532.9\text{ MB}$** |
+| Performance Benchmark | Measurement Condition | Real Measured Value | Source |
+| :--- | :--- | :---: | :--- |
+| **ONNX Runtime, single image, local CPU (Median $p_{50}$)** | Single radiograph, CPU, 2 threads | **$\mathbf{7.19\text{ ms}}$** | `results/onnx_benchmark.json` |
+| **ONNX Runtime, single image, local CPU (Mean)** | Single radiograph, CPU, 2 threads | **$\mathbf{7.32\text{ ms}}$** | `results/onnx_benchmark.json` |
+| **ONNX Runtime, single image, local CPU ($p_{95}$)** | Single radiograph, CPU, 2 threads | **$\mathbf{7.93\text{ ms}}$** | `results/onnx_benchmark.json` |
+| **ONNX Runtime, single image, local CPU (Throughput)** | Graph-only forward passes | **$\mathbf{8,344.4\text{ X-rays / minute}}$** | `results/onnx_benchmark.json` |
+| **PyTorch with Grad-CAM, local CPU ($p_{50}$)** | Single radiograph with feature map saliency | **$\mathbf{89.25\text{ ms}}$** | `results/benchmark_results.json` |
+| **PyTorch with Grad-CAM, batch (Throughput)** | Batch evaluation on local CPU | **$\mathbf{11.0\text{ X-rays / second}}$** | `results/benchmark_results.json` |
+| **Numerical Consistency vs PyTorch** | Prob Diff $< 10^{-4}$ | **$\mathbf{0.00\text{e}+00}$** (Exact match) | `results/onnx_benchmark.json` |
+| **RAM Footprint (Peak RSS)** | Peak memory during CPU inference | **$532.9\text{ MB}$** | `results/benchmark_results.json` |
 
 ---
 

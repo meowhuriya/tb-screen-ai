@@ -167,7 +167,7 @@ def test_pdf_referral_report_generation():
         prediction=prediction,
         patient_id="TEST-PT-99",
         clinic_name="Primary Care Rural Center",
-        notes="Suspected infiltrative TB lesion in upper zone.",
+        notes="Patient referral: persistent cough and fever.",
     )
 
     assert isinstance(pdf_bytes, bytes)
@@ -376,7 +376,7 @@ def test_app_input_selection_state_machine():
     assert at.session_state["uploader_key_id"] == 0
 
     # 1. Select Sample 1
-    at.sidebar.radio[0].set_value("1. Normal Chest (Healthy)").run()
+    at.sidebar.radio[0].set_value("1. Normal Chest").run()
     assert len(at.exception) == 0
     assert at.session_state["sample_selection"] == "Sample 1"
     banner_text = [m.value for m in at.markdown if "Currently analysing" in m.value]
@@ -384,7 +384,7 @@ def test_app_input_selection_state_machine():
     assert "Normal Chest" in banner_text[0]
 
     # 2. Select Sample 2
-    at.sidebar.radio[0].set_value("2. Advanced TB (Cavitation)").run()
+    at.sidebar.radio[0].set_value("2. Advanced TB").run()
     assert len(at.exception) == 0
     assert at.session_state["sample_selection"] == "Sample 2"
     banner_text = [m.value for m in at.markdown if "Currently analysing" in m.value]
@@ -402,7 +402,7 @@ def test_app_input_selection_state_machine():
     assert "patient_scan.png" in banner_text[0]
 
     # 4. Choosing Sample 1 again must clear uploaded file and analyse Sample 1
-    at.sidebar.radio[0].set_value("1. Normal Chest (Healthy)").run()
+    at.sidebar.radio[0].set_value("1. Normal Chest").run()
     assert len(at.exception) == 0
     assert at.session_state["sample_selection"] == "Sample 1"
     assert at.session_state["uploader_key_id"] > 0
