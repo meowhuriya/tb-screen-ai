@@ -18,7 +18,7 @@ license: mit
 [![HuggingFace Space](https://img.shields.io/badge/HuggingFace-Spaces%20Deployment-yellow?style=for-the-badge&logo=huggingface&logoColor=black)](https://huggingface.co/spaces)
 [![PyTorch](https://img.shields.io/badge/PyTorch-2.15-EE4C2C?style=flat-square&logo=pytorch&logoColor=white)](https://pytorch.org/)
 [![ONNX Runtime](https://img.shields.io/badge/ONNX%20Runtime-CPU%207.19ms-005CED?style=flat-square&logo=onnx&logoColor=white)](results/onnx_benchmark.json)
-[![Test ROC-AUC](https://img.shields.io/badge/Test%20ROC--AUC-0.9780%20(95%25%20CI)-success?style=flat-square)](results/metrics.json)
+[![Test ROC-AUC](https://img.shields.io/badge/Test%20ROC--AUC-0.9780%20%2895%25%20CI%29-success?style=flat-square)](results/metrics.json)
 [![WHO Sensitivity](https://img.shields.io/badge/WHO%20Sens%20Benchmark-95.10%25-brightgreen?style=flat-square)](results/metrics.json)
 [![License](https://img.shields.io/badge/License-MIT-green.svg?style=flat-square)](LICENSE)
 
@@ -197,7 +197,7 @@ python src/export_onnx.py --runs 100
 ```bash
 pytest tests/test_pipeline.py -v
 ```
-*Runs all 13 unit tests verifying OOD detection, ONNX inference, input validation (grayscale, RGBA, corrupt payloads), CLAHE preprocessing, and PDF generation.*
+*Runs all 17 unit tests verifying OOD detection, ONNX inference, input validation (grayscale, RGBA, corrupt payloads), CLAHE preprocessing, input-selection state machine, scanner-shift detection, and PDF generation.*
 
 ### Containerized Docker Deployment
 ```bash

@@ -49,6 +49,6 @@
 ### [1:40 - 2:00] SECTION 4: REAL-WORLD IMPACT, SAFETY & ADVISORY (20 Seconds)
 **[Visual]:** Closes on the "Public Health Impact" tab and the "Medical Advisor" credit.
 **[Spoken Audio]:**
-> "Our clinical workflow and triage referral protocols were reviewed by Medical Advisor Dr. Bepar Moahmmad Tayyib, MBBS.
+> "Our clinical workflow and triage referral protocols were reviewed by Medical Advisor Dr. Bepar Mohammad Tayyib, MBBS.
 >
 > TB-Screen AI does not replace doctors—it is an assistive screening aid that cuts diagnostic turnaround from 21 days to under 2 hours, preserving ₹2,000 GeneXpert cartridges for the patients who need them most. Thank you."
